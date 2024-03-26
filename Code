@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TO DO APP</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    header{
+      background-color: yellow;
+      height: 60px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+    h1{
+      text-shadow: 2px 2px white;
+      text-align: center;
+      flex-grow: 2;
+    }
+    .reset{
+      background-color: rgb(3, 175, 243);
+      margin: auto 30px;
+    }
+    .input-container{
+      background-color: skyblue;
+      display: grid;
+      grid-template-columns:repeat(3,1fr);
+      grid-template-rows: 1fr;
+      height: 70px;
+      place-items: center;
+      background-color: rgb(154, 215, 218);
+    }
+    button{
+      height: 30px;
+      min-width: 100px;
+      background-color: crimson;
+      border-radius: 10px;
+      padding: 5px 8px;
+      font-size: 20px;
+      border: none;
+      color: white;
+    }
+    input{
+      width: 300px;
+      height: 50px;
+      border-radius: 10px;
+      border: none;
+      font-size: 20px;
+      text-align: center;
+      background-color: rgb(215, 250, 246);
+      font-weight: 600;
+    }
+    input:hover{
+      border: 2px solid royalblue;
+    }
+    button:hover{
+      scale: 1.1;
+    }
+    .addbtn{
+      background-color: rgb(15, 255, 15);
+      color:  black;
+    }
+    body{
+      height: 100vh;
+      width: 100vw;
+      background-color: black;
+    }
+    .todo-style-container{
+      display: grid;
+      grid-template-columns:repeat(3,1fr);
+      grid-template-rows: 1fr;
+      font-size: 25px;
+      place-items: center;
+      padding: 10px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>To Do App</h1>
+    <button onclick="deleteall()" class="delete-all">Delete All</button>
+    <button onclick="reset()" class="reset">Reset</button>
+  </header>
+  <div class="input-container">
+    <input class="todo-input" type="text" placeholder="Enter TODO here">
+    <input class="todo-inputDate" type="date">
+    <button class="addbtn" onclick="addTodo()" >Add</button>
+  </div>
+  <div class="todo-container"></div>
+
+  <script>
+  let todoListString=localStorage.getItem('todolist');
+  let todoList=todoListString?JSON.parse(todoListString):[{item:'Milk',date:'2023-11-06'},{item:'Rice',date:'2023-10-01'}];
+  displayTodo();
+    function addTodo(){
+      let inputValue=document.querySelector(".todo-input").value;
+      let inputDate=document.querySelector(".todo-inputDate").value;
+      if(inputValue&&inputDate){
+        todoList.push({item:inputValue,date:inputDate});
+        document.querySelector(".todo-input").value='';
+        document.querySelector(".todo-inputDate").value='';
+        displayTodo();
+        todoListString=JSON.stringify(todoList);
+        localStorage.setItem('todolist',todoListString);
+      }
+    }
+    function displayTodo(){
+      let newHTML='';
+      for(let i=0;i<todoList.length;i++){
+        newHTML+=`<div class="todo-style-container">
+            <span>${todoList[i].item}</span>
+            <span>${todoList[i].date}</span>
+            <button onclick="deleteItem(${i}) ">Delete</button>
+        </div>`;
+      }
+      document.querySelector('.todo-container').innerHTML=newHTML;
+    }
+    function deleteItem(i){
+      todoList.splice(i,1);
+      todoListString=JSON.stringify(todoList);
+      localStorage.setItem('todolist',todoListString);
+      displayTodo();
+    }
+    function deleteall(){
+      todoList=[];
+      displayTodo();
+      todoListString= JSON.stringify(todoList);
+      localStorage.setItem('todolist',todoListString);
+    }
+    function reset(){
+      localStorage.removeItem('todolist');
+      location.reload();
+    }
+  </script>
+</body>
+</html>
